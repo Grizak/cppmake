@@ -4,5 +4,5 @@
 rule go_default
  command = go build  -o $out $in
 
-build build/cppmake: go_default src/main.go
+build build/cppmake: go_default cmd/cppmake/main.go
 

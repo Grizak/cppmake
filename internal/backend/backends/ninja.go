@@ -3,6 +3,7 @@ package backends
 import (
 	"fmt"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/Grizak/cppmake/internal/parser"
@@ -17,8 +18,22 @@ func (b *NinjaBackend) Generate(cfg parser.Config) []byte {
 	fmt.Fprintf(&sb, "# Project: %s %s\n\n", cfg.Project.Name, cfg.Project.Version)
 
 	// 1. Define rules per toolchain
-	for lang, tools := range cfg.Toolchains {
-		for name, tc := range tools {
+	languages := make([]string, 0, len(cfg.Toolchains))
+	for lang := range cfg.Toolchains {
+		languages = append(languages, lang)
+	}
+	sort.Strings(languages)
+
+	for _, lang := range languages {
+		tools := cfg.Toolchains[lang]
+		toolchainNames := make([]string, 0, len(tools))
+		for name := range tools {
+			toolchainNames = append(toolchainNames, name)
+		}
+		sort.Strings(toolchainNames)
+
+		for _, name := range toolchainNames {
+			tc := tools[name]
 			ruleName := fmt.Sprintf("%s_%s", lang, name)
 			fmt.Fprintf(&sb, "rule %s\n", ruleName)
 
@@ -36,7 +51,14 @@ func (b *NinjaBackend) Generate(cfg parser.Config) []byte {
 	}
 
 	// 2. Define link-rules
-	for name, linker := range cfg.Linkers {
+	linkerNames := make([]string, 0, len(cfg.Linkers))
+	for name := range cfg.Linkers {
+		linkerNames = append(linkerNames, name)
+	}
+	sort.Strings(linkerNames)
+
+	for _, name := range linkerNames {
+		linker := cfg.Linkers[name]
 		fmt.Fprintf(&sb, "rule link_%s\n", name)
 
 		// check if Run already contains $out/$in
