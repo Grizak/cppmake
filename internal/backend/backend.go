@@ -17,5 +17,5 @@ func BackendFactory(name string) (Backend, error) {
 	case "ninja":
 		return &backends.NinjaBackend{}, nil
 	}
-	return nil, fmt.Errorf("Backend not found")
+	return nil, fmt.Errorf("Backend not found: %s", name)
 }
