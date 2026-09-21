@@ -13,5 +13,5 @@ direct = true
 name = "cppmake"
 type = "binary"
 lang = "go"
-src = ["src/main.go"]
+src = ["cmd/cppmake/main.go"]
 outfile = "build/cppmake"

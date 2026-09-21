@@ -1,10 +1,11 @@
 package backends
 
 import (
-	"cppmake/src/parser"
 	"fmt"
 	"path/filepath"
 	"strings"
+
+	"github.com/Grizak/cppmake/internal/parser"
 )
 
 type NinjaBackend struct{}

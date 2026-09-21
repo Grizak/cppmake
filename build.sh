@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-go build -o build/cppmake src/main.go
+go build -o build/cppmake cmd/cppmake/main.go

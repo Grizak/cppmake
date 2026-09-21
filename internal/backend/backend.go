@@ -1,9 +1,10 @@
 package backend
 
 import (
-	"cppmake/src/backend/backends"
-	"cppmake/src/parser"
 	"fmt"
+
+	"github.com/Grizak/cppmake/internal/backend/backends"
+	"github.com/Grizak/cppmake/internal/parser"
 )
 
 type Backend interface {
@@ -16,5 +17,5 @@ func BackendFactory(name string) (Backend, error) {
 	case "ninja":
 		return &backends.NinjaBackend{}, nil
 	}
-	return &backends.NinjaBackend{}, fmt.Errorf("Backend not found")
+	return nil, fmt.Errorf("Backend not found")
 }

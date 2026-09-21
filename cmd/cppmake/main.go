@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"cppmake/src/backend"
-	"cppmake/src/parser"
+	"github.com/Grizak/cppmake/internal/backend"
+	"github.com/Grizak/cppmake/internal/parser"
 
 	"github.com/spf13/cobra"
 )

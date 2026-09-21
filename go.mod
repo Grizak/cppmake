@@ -1,4 +1,4 @@
-module cppmake
+module github.com/Grizak/cppmake
 
 go 1.25.0
 
