@@ -1,0 +1,17 @@
+[project]
+name = "cppmake"
+version = "0.0.1"
+
+[build]
+default_toolchain = "default"
+
+[toolchains.go.default]
+run = "go build"
+direct = true
+
+[[target]]
+name = "cppmake"
+type = "binary"
+lang = "go"
+src = ["src/main.go"]
+outfile = "build/cppmake"

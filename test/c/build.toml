@@ -1,0 +1,34 @@
+[project]
+name = "ctest"
+version = "0.0.1"
+
+[build]
+default_toolchain = "gcc"
+default_linker = "gcc"
+
+[toolchains.c.gcc]
+run = "gcc"
+flags = ["-Wall", "-O2"]
+
+[linkers.gcc]
+run = "gcc"
+flags = []
+
+[linkers.ar]
+run = "ar rcs $out $in"
+flags = []
+
+[[target]]
+name = "ctest"
+type = "binary"
+lang = "c"
+toolchain = "gcc"
+linker = "gcc"
+src = ["src/main.c", "src/util.c"]
+outfile = "build/ctest"
+
+[[target]]
+name = "build/libutil.a"
+type = "static"
+linker = "ar"
+src = ["src/util.c"]
