@@ -71,7 +71,7 @@ func (c *Config) ApplyDefaults() {
 			c.Targets[i].Lang = "c"
 		}
 		if c.Targets[i].Outfile == "" {
-			c.Targets[1].Outfile = c.Targets[1].Name
+			c.Targets[i].Outfile = c.Targets[i].Name
 		}
 	}
 }
