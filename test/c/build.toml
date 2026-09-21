@@ -3,6 +3,7 @@ name = "ctest"
 version = "0.0.1"
 
 [build]
+build_dir = "build"
 default_toolchain = "gcc"
 default_linker = "gcc"
 

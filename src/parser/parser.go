@@ -16,6 +16,7 @@ type ProjectConfig struct {
 }
 
 type BuildConfig struct {
+	BuildDir         string `toml:"build_dir"`
 	DefaultToolchain string `toml:"default_toolchain"`
 	DefaultLinker    string `toml:"default_linker"`
 }
@@ -50,6 +51,10 @@ func (c *Config) ApplyDefaults() {
 	}
 	if c.Build.DefaultLinker == "" {
 		c.Build.DefaultLinker = "gcc"
+	}
+
+	if c.Build.BuildDir == "" {
+		c.Build.BuildDir = "build"
 	}
 
 	for i := range c.Targets {

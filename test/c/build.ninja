@@ -2,13 +2,13 @@
 # Project: ctest 0.0.1
 
 rule c_gcc
- command = gcc -Wall -O2 -c $in -o $out
+ command = mkdir -p $$(dirname $out) && gcc -Wall -O2 -c $in -o $out
 
 rule link_gcc
-  command = gcc  $in -o $out
+  command = mkdir -p $$(dirname $out) && gcc  $in -o $out
 
 rule link_ar
-  command = ar rcs $out $in 
+  command = mkdir -p $$(dirname $out) && ar rcs $out $in 
 
 build build/obj/src/main.o: c_gcc src/main.c
 build build/obj/src/util.o: c_gcc src/util.c

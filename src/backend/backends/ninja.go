@@ -28,7 +28,7 @@ func (b *NinjaBackend) Generate(cfg parser.Config) []byte {
 			} else {
 				// gcc -c $in -o $out
 				flags := strings.Join(tc.Flags, " ")
-				fmt.Fprintf(&sb, " command = %s %s -c $in -o $out\n", tc.Run, flags)
+				fmt.Fprintf(&sb, " command = mkdir -p $$(dirname $out) && %s %s -c $in -o $out\n", tc.Run, flags)
 			}
 			sb.WriteString("\n")
 		}
@@ -36,14 +36,14 @@ func (b *NinjaBackend) Generate(cfg parser.Config) []byte {
 
 	// 2. Definiera link-rules
 	for name, linker := range cfg.Linkers {
-		sb.WriteString(fmt.Sprintf("rule link_%s\n", name))
+		fmt.Fprintf(&sb, "rule link_%s\n", name)
 
 		// kolla om Run redan innehåller $out/$in
 		if strings.Contains(linker.Run, "$out") {
-			sb.WriteString(fmt.Sprintf("  command = %s %s\n", linker.Run, strings.Join(linker.Flags, " ")))
+			fmt.Fprintf(&sb, "  command = mkdir -p $$(dirname $out) && %s %s\n", linker.Run, strings.Join(linker.Flags, " "))
 		} else {
 			// default för gcc/clang
-			sb.WriteString(fmt.Sprintf("  command = %s %s $in -o $out\n", linker.Run, strings.Join(linker.Flags, " ")))
+			fmt.Fprintf(&sb, "  command = mkdir -p $$(dirname $out) && %s %s $in -o $out\n", linker.Run, strings.Join(linker.Flags, " "))
 		}
 		sb.WriteString("\n")
 	}

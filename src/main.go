@@ -35,5 +35,10 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+	case "clean":
+		os.Remove("build.ninja")
+		os.Remove(".ninja_log")
+		os.Remove(".ninja_deps")
+		fmt.Println("Cleaned.")
 	}
 }
