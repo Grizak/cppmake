@@ -1,6 +1,6 @@
 [project]
 name = "cppmake"
-version = "0.0.2"
+version = "v0.1.0"
 
 [build]
 default_toolchain = "default"
