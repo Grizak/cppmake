@@ -38,6 +38,9 @@ var buildCmd = &cobra.Command{
 		}
 
 		cfg.ApplyDefaults()
+		if err := cfg.Validate(); err != nil {
+			return fmt.Errorf("invalid build.toml: %w", err)
+		}
 
 		b, err := backend.BackendFactory(backendName)
 		if err != nil {

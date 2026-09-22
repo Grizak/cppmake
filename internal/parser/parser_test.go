@@ -3,6 +3,7 @@ package parser_test
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/Grizak/cppmake/internal/parser"
@@ -43,6 +44,56 @@ func TestApplyDefaults(t *testing.T) {
 	configuredTarget := config.Targets[1]
 	if configuredTarget.Type != "static" || configuredTarget.Lang != "cpp" || configuredTarget.Toolchain != "clang" || configuredTarget.Linker != "lld" || configuredTarget.Outfile != "custom.out" {
 		t.Errorf("configured target was changed: %+v", configuredTarget)
+	}
+}
+
+func TestValidateCollectsErrors(t *testing.T) {
+	config := parser.Config{
+		Toolchains: map[string]map[string]parser.Toolchain{
+			"c": {"gcc": {}},
+		},
+		Linkers: map[string]parser.Linker{"gcc": {}},
+		Targets: []parser.Target{
+			{Name: "app", Src: []string{"main.c"}, Type: "binary", Lang: "c", Toolchain: "gcc", Linker: "gcc", DependsOn: []string{"missing"}},
+			{Name: "app"},
+			{Name: "bad", Type: "unknown", Lang: "rust", Toolchain: "rustc", Linker: "ld", DependsOn: []string{"missing-bad"}},
+			{Name: "tool", Src: []string{"tool.c"}, Type: "binary", Lang: "c", Toolchain: "clang", Linker: "gcc"},
+			{Name: "first", Src: []string{"first.c"}, Type: "binary", Lang: "c", Toolchain: "gcc", Linker: "gcc", DependsOn: []string{"second"}},
+			{Name: "second", Src: []string{"second.c"}, Type: "binary", Lang: "c", Toolchain: "gcc", Linker: "gcc", DependsOn: []string{"first"}},
+		},
+	}
+
+	err := config.Validate()
+	if err == nil {
+		t.Fatal("Validate() error = nil, want validation errors")
+	}
+	for _, expected := range []string{
+		"duplicate target name \"app\"",
+		"target \"app\": src must not be empty",
+		"target \"app\": depends_on references unknown target \"missing\"",
+		"target \"bad\": unknown type \"unknown\"",
+		"target \"bad\": unknown lang \"rust\"",
+		"target \"bad\": unknown linker \"ld\"",
+		"target \"bad\": depends_on references unknown target \"missing-bad\"",
+		"target \"tool\": unknown toolchain \"clang\" for lang \"c\"",
+		"dependency cycle: first -> second -> first",
+	} {
+		if !strings.Contains(err.Error(), expected) {
+			t.Errorf("Validate() error = %q, want it to contain %q", err, expected)
+		}
+	}
+}
+
+func TestValidateSuccess(t *testing.T) {
+	config := parser.Config{
+		Toolchains: map[string]map[string]parser.Toolchain{"c": {"gcc": {}}},
+		Linkers:    map[string]parser.Linker{"gcc": {}},
+		Targets: []parser.Target{
+			{Name: "app", Src: []string{"main.c"}, Type: "binary", Lang: "c", Toolchain: "gcc", Linker: "gcc"},
+		},
+	}
+	if err := config.Validate(); err != nil {
+		t.Fatalf("Validate() error = %v, want nil", err)
 	}
 }
 
