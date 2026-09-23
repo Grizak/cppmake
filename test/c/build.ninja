@@ -4,11 +4,11 @@
 rule c_gcc
  command = mkdir -p $$(dirname $out) && gcc -Wall -O2 -c $in -o $out
 
-rule link_gcc
-  command = mkdir -p $$(dirname $out) && gcc  $in -o $out
-
 rule link_ar
   command = mkdir -p $$(dirname $out) && ar rcs $out $in 
+
+rule link_gcc
+  command = mkdir -p $$(dirname $out) && gcc  $in -o $out
 
 build build/obj/src/main.o: c_gcc src/main.c
 build build/obj/src/util.o: c_gcc src/util.c
