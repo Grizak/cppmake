@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/Grizak/cppmake/internal/backend/backends"
-	"github.com/Grizak/cppmake/internal/parser"
+	"github.com/Grizak/cppmake/internal/plan"
 )
 
 type Backend interface {
-	Generate(cfg parser.Config) []byte
+	Emit(p *plan.Plan) ([]byte, error)
 	Filename() string
 }
 

@@ -15,10 +15,6 @@ flags = ["-Wall", "-O2"]
 run = "gcc"
 flags = []
 
-[linkers.ar]
-run = "ar rcs $out $in"
-flags = []
-
 [[target]]
 name = "ctest"
 type = "binary"
@@ -26,10 +22,10 @@ lang = "c"
 toolchain = "gcc"
 linker = "gcc"
 src = ["src/main.c", "src/util.c"]
-outfile = "build/ctest"
+outfile = "ctest"
 
 [[target]]
-name = "build/libutil.a"
+name = "libutil.a"
 type = "static"
-linker = "ar"
+lang = "c"
 src = ["src/util.c"]
