@@ -2,17 +2,27 @@
 # Project: ctest 0.0.1
 
 rule c_gcc
- command = mkdir -p $$(dirname $out) && gcc -Wall -O2 -c $in -o $out
-
-rule link_ar
-  command = mkdir -p $$(dirname $out) && ar rcs $out $in 
+  command = gcc $flags -MMD -MF $out.d -c $in -o $out
+  depfile = $out.d
+  deps = gcc
 
 rule link_gcc
-  command = mkdir -p $$(dirname $out) && gcc  $in -o $out
+  command = gcc $flags $in -o $out $libs
 
-build build/obj/src/main.o: c_gcc src/main.c
-build build/obj/src/util.o: c_gcc src/util.c
+rule link_ar
+  command = ar rcs $out $flags $in $libs
 
+build build/obj/ctest/src/main.o: c_gcc src/main.c
+  flags = -Wall -O2
+build build/obj/ctest/src/util.o: c_gcc src/util.c
+  flags = -Wall -O2
+build build/ctest: link_gcc build/obj/ctest/src/main.o build/obj/ctest/src/util.o
+  libs = 
+  flags = 
+build build/obj/libutil.a/src/util.o: c_gcc src/util.c
+  flags = -Wall -O2
+build build/libutil.a: link_ar build/obj/libutil.a/src/util.o
+  flags = 
+  libs = 
 
-build build/ctest: link_gcc build/obj/src/main.o build/obj/src/util.o
-build build/libutil.a: link_ar build/obj/src/util.o
+default build/ctest build/libutil.a

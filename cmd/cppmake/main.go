@@ -6,6 +6,7 @@ import (
 
 	"github.com/Grizak/cppmake/internal/backend"
 	"github.com/Grizak/cppmake/internal/parser"
+	"github.com/Grizak/cppmake/internal/plan"
 
 	"github.com/spf13/cobra"
 )
@@ -37,9 +38,9 @@ var buildCmd = &cobra.Command{
 			return fmt.Errorf("parse build.toml: %w", err)
 		}
 
-		cfg.ApplyDefaults()
-		if err := cfg.Validate(); err != nil {
-			return fmt.Errorf("invalid build.toml: %w", err)
+		buildPlan, err := plan.Resolve(cfg)
+		if err != nil {
+			return fmt.Errorf("resolve build.toml: %w", err)
 		}
 
 		b, err := backend.BackendFactory(backendName)
@@ -47,7 +48,10 @@ var buildCmd = &cobra.Command{
 			return fmt.Errorf("create backend %q: %w", backendName, err)
 		}
 
-		content := b.Generate(*cfg)
+		content, err := b.Emit(buildPlan)
+		if err != nil {
+			return fmt.Errorf("emit build file: %w", err)
+		}
 
 		if err := os.WriteFile(
 			b.Filename(),
