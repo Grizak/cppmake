@@ -5,11 +5,12 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,7 +22,11 @@ jobs:
 
       - uses: goreleaser/goreleaser-action@v6
         with:
+          distribution: goreleaser
+          version: "~> v2"
           args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-repo:
     runs-on: ubuntu-latest
