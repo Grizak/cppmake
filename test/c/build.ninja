@@ -6,11 +6,11 @@ rule c_gcc
   depfile = $out.d
   deps = gcc
 
-rule link_gcc
-  command = gcc $flags $in -o $out $libs
-
 rule link_ar
   command = ar rcs $out $flags $in $libs
+
+rule link_gcc
+  command = gcc $flags $in -o $out $libs
 
 build build/obj/ctest/src/main.o: c_gcc src/main.c
   flags = -Wall -O2
