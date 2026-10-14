@@ -1,0 +1,28 @@
+version: 2
+project_name: cppmake
+
+builds:
+  - id: cppmake
+    main: ./cmd/cppmake
+    binary: cppmake
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+
+nfpms:
+  - id: cppmake
+    package_name: cppmake
+    vendor: "Isak Grönlund"
+    maintainer: "Isak Grönlund <gronlundisak11@gmail.com> (https://isaksweb.xyz)"
+    description: "Simple build generator written in go"
+    homepage: "https://github.com/Grizak/cppmake"
+    license: "MIT"
+    formats:
+      - deb
+      - rpm
+      - archlinux
+    bindir: /usr/bin
