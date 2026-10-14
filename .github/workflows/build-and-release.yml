@@ -38,7 +38,7 @@ jobs:
         with:
           install-only: true
 
-      - uses: Grizak/packages/.github/actions/publish@990d22d43413fd5b53c33d880d286ed8b7e4d59c
+      - uses: Grizak/packages/.github/actions/publish@v1
         with:
           build-dir: dist
           token: ${{ secrets.RELEASE_TOKEN }}
