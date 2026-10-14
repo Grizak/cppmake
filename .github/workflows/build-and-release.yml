@@ -1,0 +1,45 @@
+name: Build & Release Cppmake
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          args: release --clean
+
+  publish-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          install-only: true
+
+      - uses: Grizak/packages/.github/actions/publish@990d22d43413fd5b53c33d880d286ed8b7e4d59c
+        with:
+          build-dir: dist
+          token: ${{ secrets.RELEASE_TOKEN }}
+          build-command: ./build.sh
